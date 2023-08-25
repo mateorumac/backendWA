@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const mongoose  = require("mongoose");
 const cookieParser = require('cookie-parser');
 const authRoute = require("./routes/auth");
+const reviewRoute = require("./routes/review");
+// const reservedRoute = require("./routes/reserved");
 const cors = require("cors");
 const session = require("express-session");
 
@@ -36,5 +38,8 @@ mongoose
 
 
 
-app.use("/api/auth",authRoute)
+app.use("/api/auth",authRoute);
+app.use("/api/review", reviewRoute);
+// app.use("/api/reserved", reservedRoute);
+
 app.listen(port, () => console.log(`Working on port ${port}`))
