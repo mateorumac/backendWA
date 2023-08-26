@@ -1,21 +1,17 @@
 const mongoose  = require("mongoose");
 
 const ReservedSchema = new mongoose.Schema({
-    type :{
+    serviceType :{
         type: mongoose.SchemaTypes.String,
-        require: true
+        required: true
     },
-    Date :{
+    reservationDate :{
         type: mongoose.SchemaTypes.Date,
-        require: false
+        required: true
     },
-    number:{
-        type: mongoose.SchemaTypes.Number,
-        require: false
-    },
-    comment :{
+    phoneNumber:{
         type: mongoose.SchemaTypes.String,
-        require: true
+        required: true
     },
     createdAt:{
         type: mongoose.SchemaTypes.Date,

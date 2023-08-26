@@ -17,11 +17,12 @@ async function authenticateToken(email, password) {
     let userDb = await User.findOne({ email })
     if (userDb && userDb.password && comparePassword(password, userDb.password)) {
         delete userDb.password
-        let token = jwt.sign({ email: userDb.email }, process.env.TOKEN_SECRET, { algorithm: "HS512", expiresIn: "1week" })
+        let token = jwt.sign({ email: userDb.email, role: userDb.role }, process.env.TOKEN_SECRET, { algorithm: "HS512", expiresIn: "1week" })
 
         return {
             token,
-            email: userDb.email
+            email: userDb.email,
+            role: userDb.role
 
         }
 

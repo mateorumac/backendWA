@@ -13,6 +13,10 @@ const ReviewSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         require: false
     },
+    reviewerName: {
+        type: mongoose.SchemaTypes.String,
+        require: true
+    },
     createdAt:{
         type: mongoose.SchemaTypes.Date,
         require: true,

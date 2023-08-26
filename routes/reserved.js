@@ -1,18 +1,42 @@
-router.post('/reserved', authenticateToken, async (req,res) => {
-    const authenticatedUser = req.user;
-    const userFname = authenticatedUser.name;
-    const userLname = authenticatedUser.lname;
-    const formData = req.body;
+require('dotenv').config();
+const express = require('express');
+const router = express.Router();
+const Reserved = require("../Database/Schemas/Reserved"); 
+const jwtDecode = require('jwt-decode');
+const User = require("../Database/Schemas/User"); 
 
-  // Example: Save the form data to your database
-  // You can modify this logic to match your data model and storage mechanism
+router.post('/reserved', async (req, res) => {
   try {
-    // Save the form data with the authenticated user's email
-    const result = await saveFormData(userEmail, formData);
-    
-    res.status(200).json({ message: 'Form data saved successfully', result });
+      // Decode the JWT token to get the user's email
+      const tokenSecret = process.env.TOKEN_SECRET;
+      const token = req.headers.authorization.split(" ")[1];
+      const decodedToken = jwtDecode(token);
+      const userEmail = decodedToken.email;
+
+      // Fetch user details using email
+      const user = await User.findOne({ email: userEmail });
+
+      if (!user) {
+          return res.status(404).send({ error: 'User not found' });
+      }
+
+      // Get the full first name and last name initial
+      const fullName = `${user.name} ${user.lname}`;
+      // Create a new reservation
+      const reservation = new Reserved({
+          serviceType: req.body.selectedCategory,
+          reservationDate: new Date(req.body.selectedTime),
+          phoneNumber: req.body.clientPhone,
+          comment: `Reserved by ${fullName}`,  // Adding user's full name and last name initial to the comment
+          createdAt: new Date()
+      });
+
+      // Save the reservation to the database
+      await reservation.save();
+
+      res.status(200).send({ message: 'Reservation successfully saved' });
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred while saving form data' });
+      res.status(500).send({ error: 'Server error. Please try again later.'});
   }
 });
   module.exports = router;

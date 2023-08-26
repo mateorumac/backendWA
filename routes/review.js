@@ -1,29 +1,10 @@
 const { Router } = require("express");
 const Review = require("../Database/Schemas/Review");
-const jwt = require('jsonwebtoken');
+const User = require("../Database/Schemas/User");
 
 const router = Router();
 
-
-function verifyToken(req, res, next) {
-    const token = req.headers['authorization'];
-
-    if (!token) {
-        return res.status(403).send({ msg: 'No token provided.' });
-    }
-
-    jwt.verify(token, 'ASDSAFASF', (err, decoded) => {
-        if (err) {
-            return res.status(500).send({ msg: 'Failed to authenticate token.' });
-        }
-        
-        
-        req.userId = decoded.id;  
-        next();
-    });
-}
-
-router.get("/svi",  async (req, res) => {
+router.get("/svi", async (req, res) => {
     try {
         const svi = await Review.find({});
         res.send(svi);
@@ -33,15 +14,28 @@ router.get("/svi",  async (req, res) => {
     }
 });
 
-// Add verifyToken middleware before the route handler
-router.post('/postrev', verifyToken, async (req, res) => {
-  console.log("Review POST endpoint hit");
+router.post('/postrev', async (req, res) => {
     try {
-        const { review, rating } = req.body;
+        const { review, rating, userEmail, firstName, lastNameInitial } = req.body;
+
+        const user = await User.findOne({ email: userEmail });
+
+        if (!user) {
+            return res.status(404).send({ msg: "User not found." });
+        }
+
+        // Check if the user's name from the database matches the first name sent and if the first character of their last name matches the last name initial sent
+        if (user.name !== firstName || user.lname.charAt(0) !== lastNameInitial) {
+            return res.status(400).send({ msg: "Name mismatch." });
+        }
+
+        const reviewerName = `${firstName} ${lastNameInitial}.`;
 
         const newReview = new Review({
             description: review,
-            rating: rating  
+            rating: rating,
+            userEmail: userEmail,
+            reviewerName  
         });
 
         await newReview.save();
