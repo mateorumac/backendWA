@@ -1,7 +1,7 @@
 const mongoose  = require("mongoose");
 
 const ReviewSchema = new mongoose.Schema({
-    description :{
+    review :{
         type: mongoose.SchemaTypes.String,
         require: true
     },
@@ -9,13 +9,9 @@ const ReviewSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.Number,
         require: true
     },
-    userEmail:{
-        type: mongoose.SchemaTypes.String,
-        require: false
-    },
     reviewerName: {
         type: mongoose.SchemaTypes.String,
-        require: true
+        require: false
     },
     createdAt:{
         type: mongoose.SchemaTypes.Date,

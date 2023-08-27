@@ -6,13 +6,16 @@ const ItemSchema = new mongoose.Schema({
         required: true
     },
     price :{
-        type: mongoose.SchemaTypes.String,
+        type: mongoose.SchemaTypes.Number,
         required: true
     },
     originalPrice :{
         type: mongoose.SchemaTypes.Number,
         required: true
     },
+    discountApplied: { 
+        type: Boolean,
+        default: false }
 
 })
 module.exports =  mongoose.model('item', ItemSchema);

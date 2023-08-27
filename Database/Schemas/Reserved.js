@@ -13,11 +13,16 @@ const ReservedSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         required: true
     },
+    comment: {
+        type: mongoose.SchemaTypes.String,
+        required: false 
+    },
     createdAt:{
         type: mongoose.SchemaTypes.Date,
         require: true,
         default: new Date()
     },
+
 
 
 })

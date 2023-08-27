@@ -34,9 +34,20 @@ router.post('/reserved', async (req, res) => {
       // Save the reservation to the database
       await reservation.save();
 
-      res.status(200).send({ message: 'Reservation successfully saved' });
+      res.status(200).send({ message: 'Reservation successfully saved',
+      reservation: reservation });
   } catch (error) {
       res.status(500).send({ error: 'Server error. Please try again later.'});
   }
 });
+
+router.get('/getAllReservations', async (req, res) => {
+    try {
+        const allReservations = await Reserved.find();
+        res.status(200).send(allReservations);
+    } catch (error) {
+        res.status(500).send({ error: 'Server error. Please try again later.'});
+    }
+});
+
   module.exports = router;

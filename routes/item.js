@@ -11,38 +11,40 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
-    try {
-        const item = await Item.findById(req.params.id);
-        if (!item) return res.status(404).json({ message: "Not Found" });
-        res.json(item);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+router.post('/add', async (req, res) => {
+    const priceValue = parseFloat(req.body.price);
+    if (isNaN(priceValue)) {
+        return res.status(400).json({ message: "Invalid price format." });
     }
-});
 
-router.post('/', async (req, res) => {
     const item = new Item({
-        serviceName: req.body.serviceName,
-        servicePrice: req.body.servicePrice
+        name: req.body.name,
+        price: priceValue,
+        originalPrice: priceValue
     });
 
     try {
         const newItem = await item.save();
-        res.status(201).json(newItem);
+        res.status(201).json({ success: true, item: newItem });
     } catch (err) {
+        console.error("Error saving item:", err);
         res.status(400).json({ message: err.message });
     }
 });
 
-router.put('/:id', async (req, res) => {
+
+router.put('/:id/discount', async (req, res) => {
     try {
         const item = await Item.findById(req.params.id);
         if (!item) return res.status(404).json({ message: "Not Found" });
 
-        item.serviceName = req.body.serviceName || item.serviceName;
-        item.servicePrice = req.body.servicePrice || item.servicePrice;
-        
+        if (item.discountApplied) {
+            return res.status(400).json({ message: "Discount already applied." });
+        }
+
+        item.price = req.body.price;  // Set price directly
+        item.discountApplied = true; 
+
         const updatedItem = await item.save();
         res.json(updatedItem);
     } catch (err) {
@@ -50,15 +52,23 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.put('/:id/removeDiscount', async (req, res) => {
     try {
         const item = await Item.findById(req.params.id);
         if (!item) return res.status(404).json({ message: "Not Found" });
-        
-        await item.remove();
-        res.json({ message: "Item deleted" });
+
+        if (!item.discountApplied) {
+            return res.status(400).json({ message: "Discount not applied to this item." });
+        }
+
+        item.price = item.originalPrice;  // Reset price
+        item.discountApplied = false;
+
+        const updatedItem = await item.save();
+        res.json(updatedItem);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(400).json({ message: err.message });
     }
 });
+
 module.exports = router;

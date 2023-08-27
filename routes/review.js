@@ -14,35 +14,24 @@ router.get("/svi", async (req, res) => {
     }
 });
 
-router.post('/postrev', async (req, res) => {
+router.post('/review', async (req, res) => {
     try {
-        const { review, rating, userEmail, firstName, lastNameInitial } = req.body;
-
-        const user = await User.findOne({ email: userEmail });
-
-        if (!user) {
-            return res.status(404).send({ msg: "User not found." });
-        }
-
-        // Check if the user's name from the database matches the first name sent and if the first character of their last name matches the last name initial sent
-        if (user.name !== firstName || user.lname.charAt(0) !== lastNameInitial) {
-            return res.status(400).send({ msg: "Name mismatch." });
-        }
-
-        const reviewerName = `${firstName} ${lastNameInitial}.`;
-
-        const newReview = new Review({
-            description: review,
-            rating: rating,
-            userEmail: userEmail,
-            reviewerName  
+        
+        // Create a new review
+        const review = new Review({
+            review: req.body.review,
+            rating: req.body.rating,
+            reviewerName: req.body.reviewerName,  // Directly using the reviewerName sent from frontend
+            createdAt: new Date()
         });
-
-        await newReview.save();
-        res.sendStatus(200);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send({ msg: "Server error" });
+  
+        // Save the review to the database
+        await review.save();
+  
+        res.status(200).send({ message: 'Review successfully saved', review: review });
+    } catch (error) {
+        console.error("Error while creating review:", error);  // Enhanced logging
+        res.status(500).send({ error: 'Server error. Please try again later.'});
     }
 });
 
