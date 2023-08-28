@@ -35,4 +35,15 @@ router.post('/review', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    try {
+        const reviewId = req.params.id;
+        await Review.findByIdAndDelete(reviewId);
+        res.status(200).send({ message: 'Review successfully deleted' });
+    } catch (error) {
+        console.error("Error while deleting review:", error);
+        res.status(500).send({ error: 'Server error. Please try again later.'});
+    }
+});
+
 module.exports = router;

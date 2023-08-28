@@ -20,14 +20,14 @@ router.post('/reserved', async (req, res) => {
           return res.status(404).send({ error: 'User not found' });
       }
 
-      // Get the full first name and last name initial
+      
       const fullName = `${user.name} ${user.lname}`;
       // Create a new reservation
       const reservation = new Reserved({
           serviceType: req.body.selectedCategory,
           reservationDate: new Date(req.body.selectedTime),
           phoneNumber: req.body.clientPhone,
-          comment: `Reserved by ${fullName}`,  // Adding user's full name and last name initial to the comment
+          comment: `Reserved by ${fullName}`,  
           createdAt: new Date()
       });
 
@@ -45,6 +45,21 @@ router.get('/getAllReservations', async (req, res) => {
     try {
         const allReservations = await Reserved.find();
         res.status(200).send(allReservations);
+    } catch (error) {
+        res.status(500).send({ error: 'Server error. Please try again later.'});
+    }
+});
+
+router.delete('/:id', async (req, res) => {
+    try {
+        const reservationId = req.params.id;
+        const deletedReservation = await Reserved.findByIdAndRemove(reservationId);
+        
+        if (!deletedReservation) {
+            return res.status(404).send({ error: 'Reservation not found' });
+        }
+
+        res.status(200).send({ message: 'Reservation successfully deleted' });
     } catch (error) {
         res.status(500).send({ error: 'Server error. Please try again later.'});
     }

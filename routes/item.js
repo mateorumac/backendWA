@@ -71,4 +71,18 @@ router.put('/:id/removeDiscount', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    try {
+        const itemId = req.params.id;
+        const result = await Item.findByIdAndDelete(itemId);
+        
+        if (!result) return res.status(404).json({ message: "Item not found." });
+
+        res.json({ success: true, message: 'Item successfully deleted' });
+    } catch (err) {
+        console.error("Error deleting item:", err);
+        res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = router;
