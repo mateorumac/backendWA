@@ -19,7 +19,7 @@ app.use(cookieParser());
 
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:8080'
+  origin: 'https://wa-backend4.onrender.com'
 }));
 
 app.use(bodyParser.json())
