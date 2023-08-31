@@ -19,7 +19,7 @@ app.use(cookieParser());
 
 app.use(cors({
   credentials: true,
-  origin: 'https://wa-backend4.onrender.com'
+  origin: 'https://wa-frontend-mateorumac.vercel.app/'
 }));
 
 app.use(bodyParser.json())
