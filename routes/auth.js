@@ -45,7 +45,12 @@ router.post("/register", async (req, res) => {
   
   
   router.post('/logout', (req, res) => {
-    res.clearCookie('token');
+    res.cookie('token', '', {
+      expires: new Date(0), 
+      httpOnly: false, 
+      secure: true, 
+      sameSite: 'none'
+  });
     res.status(200).json({ message: 'Logout successful' });
   });
   
