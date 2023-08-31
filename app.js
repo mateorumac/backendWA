@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 app.use(cors({
   credentials: true,
-  origin: 'https://wa-frontend-mateorumac.vercel.app/'
+  origin: 'https://wa-frontend-mateorumac.vercel.app'
 }));
 
 app.use(bodyParser.json())
