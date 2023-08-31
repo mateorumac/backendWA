@@ -12,7 +12,10 @@ const session = require("express-session");
 
 
 const app = express()
-const port = process.env.PORT || 3030;
+app.get('/', (req, res) => {
+  res.send('Hello World');
+});
+const port = process.env.PORT || 10000;
 
 
 app.use(cookieParser());
