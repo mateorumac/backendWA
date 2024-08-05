@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 app.use(cors({
   credentials: true,
-  origin: 'https://frontend-wa.vercel.app/'
+  origin: 'https://frontend-wa.vercel.app'
 }));
 
 app.use(bodyParser.json())
